@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Admin Portal RT 003 Sukamanah</title>
+<style>
+:root{--navy:#12304a;--blue:#176b87;--bg:#f3f7fa;--line:#dce5eb;--muted:#637789;--red:#b42318}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#1d2b36;font:15px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+header{background:var(--navy);color:white;padding:20px max(20px,calc((100% - 1100px)/2));display:flex;justify-content:space-between;align-items:center;gap:12px}
+header h1{font-size:20px;margin:0}header p{margin:3px 0 0;color:#d6e4ec;font-size:13px}
+main{max-width:1100px;margin:28px auto;padding:0 18px}.panel{background:white;border:1px solid var(--line);border-radius:14px;padding:22px;margin-bottom:18px;box-shadow:0 4px 18px #19354a0a}
+h2{font-size:19px;margin:0 0 15px;color:var(--navy)}h3{font-size:16px;margin:0 0 10px}
+label{display:block;font-weight:600;margin:12px 0 5px}input,textarea,select{width:100%;padding:11px 12px;border:1px solid #cbd7df;border-radius:8px;font:inherit;background:white}textarea{min-height:100px;resize:vertical}
+button{border:0;border-radius:8px;padding:10px 15px;background:var(--blue);color:white;font-weight:650;cursor:pointer;margin:7px 6px 0 0}button.secondary{background:#e8eff3;color:var(--navy)}button.danger{background:var(--red)}button:disabled{opacity:.55;cursor:not-allowed}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:14px}.hidden{display:none!important}.muted{color:var(--muted);font-size:13px}.notice{padding:11px 13px;border-radius:8px;background:#eef6fa;color:#214e64;margin:12px 0}.error{background:#fff0ef;color:#8c2119}.success{background:#ecf8f0;color:#17633a}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}.item{border:1px solid var(--line);border-radius:10px;padding:13px;margin:10px 0}.item p{margin:5px 0}.tag{font-size:12px;background:#eaf2f6;padding:3px 8px;border-radius:20px}
+#status{margin-top:12px}.small{font-size:12px}footer{text-align:center;color:var(--muted);padding:20px}
+@media(max-width:650px){.row{grid-template-columns:1fr}header{align-items:flex-start;flex-direction:column}.panel{padding:17px}}
+</style>
+</head>
+<body>
+<header><div><h1>Admin Portal RT 003</h1><p>Sukamanah · Sukatani</p></div><button id="logoutBtn" class="secondary hidden">Keluar</button></header>
+<main>
+<section id="configPanel" class="panel">
+<h2>Pengaturan koneksi</h2>
+<p>Masukkan URL project Supabase dan publishable/anon key. Keduanya boleh digunakan di website publik jika kebijakan RLS pada database sudah diterapkan. Jangan pernah memasukkan service_role key di sini.</p>
+<label for="supabaseUrl">Supabase Project URL</label><input id="supabaseUrl" placeholder="https://xxxx.supabase.co">
+<label for="supabaseKey">Supabase publishable key / anon key</label><textarea id="supabaseKey" style="min-height:72px" placeholder="sb_publishable_... atau anon key lama"></textarea>
+<button id="connectBtn">Simpan koneksi di browser ini</button>
+<p class="muted">Koneksi disimpan hanya di browser perangkat ini. File admin ini tidak menyimpan kata sandi.</p>
+</section>
+
+<section id="loginPanel" class="panel hidden">
+<h2>Login pengurus</h2>
+<p class="muted">Gunakan email dan kata sandi akun admin yang sudah dibuat di Supabase Authentication.</p>
+<label for="email">Email admin</label><input id="email" type="email" autocomplete="username">
+<label for="password">Kata sandi</label><input id="password" type="password" autocomplete="current-password">
+<button id="loginBtn">Masuk</button><div id="loginStatus" class="notice hidden"></div>
+</section>
+
+<div id="dashboard" class="hidden">
+<div class="panel toolbar"><div><h2 style="margin:0">Dashboard pengurus</h2><div id="whoami" class="muted"></div></div><span class="tag">Admin RT 003</span></div>
+<section class="panel">
+<h2>Pengumuman warga</h2>
+<input id="announcementId" type="hidden">
+<label>Judul pengumuman</label><input id="announcementTitle" placeholder="Contoh: Kerja bakti lingkungan">
+<label>Isi pengumuman</label><textarea id="announcementBody" placeholder="Tuliskan informasi untuk warga..."></textarea>
+<div class="row"><div><label>Status</label><select id="announcementPublished"><option value="true">Terbit</option><option value="false">Draf</option></select></div><div style="align-self:end"><button id="saveAnnouncement">Simpan pengumuman</button><button id="cancelAnnouncement" class="secondary">Bersihkan</button></div></div>
+<div id="announcementsList"></div>
+</section>
+<section class="panel">
+<h2>Kegiatan RT</h2>
+<input id="eventId" type="hidden">
+<label>Nama kegiatan</label><input id="eventTitle" placeholder="Contoh: Rapat warga">
+<div class="row"><div><label>Tanggal dan waktu</label><input id="eventDate" type="datetime-local"></div><div><label>Lokasi</label><input id="eventLocation" placeholder="Contoh: Pos RT 003"></div></div>
+<label>Keterangan</label><textarea id="eventDescription" placeholder="Informasi kegiatan..."></textarea>
+<label>Status</label><select id="eventPublished"><option value="true">Terbit</option><option value="false">Draf</option></select>
+<button id="saveEvent">Simpan kegiatan</button><button id="cancelEvent" class="secondary">Bersihkan</button>
+<div id="eventsList"></div>
+</section>
+<section class="panel">
+<h2>Foto dokumentasi</h2>
+<p class="muted">Unggah foto ke bucket Storage bernama <b>rt-gallery</b>. Batasi ukuran foto agar hemat kuota.</p>
+<input id="photoFile" type="file" accept="image/*">
+<label>Keterangan foto</label><input id="photoCaption" placeholder="Contoh: Kerja bakti November 2026">
+<button id="uploadPhoto">Unggah foto</button><div id="galleryList"></div>
+</section>
+<div id="appStatus" class="notice hidden" role="status"></div>
+</div>
+</main>
+<footer>Portal RT 003 Sukamanah Sukatani · Panel pengurus</footer>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+let sb=null, currentUser=null;
+const $=id=>document.getElementById(id);
+function message(target,text,type="notice"){const el=$(target);el.textContent=text;el.className="notice "+(type==="error"?"error":type==="success"?"success":"");el.classList.remove("hidden");}
+function appMessage(text,type){message("appStatus",text,type)}
+function showAuth(){ $("loginPanel").classList.remove("hidden"); $("dashboard").classList.add("hidden"); $("logoutBtn").classList.add("hidden");}
+function showDashboard(user){currentUser=user;$("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("whoami").textContent=user.email||"Pengurus";loadAll();}
+function connect(){
+ const url=$("supabaseUrl").value.trim(), key=$("supabaseKey").value.trim();
+ if(!url.startsWith("https://")||!key){message("loginStatus","URL atau key belum benar.","error");return;}
+ localStorage.setItem("rt003_sb_url",url);localStorage.setItem("rt003_sb_key",key);
+ sb=window.supabase.createClient(url,key);$("configPanel").classList.add("hidden");$("loginPanel").classList.remove("hidden");
+}
+function init(){
+ const url=localStorage.getItem("rt003_sb_url"),key=localStorage.getItem("rt003_sb_key");
+ if(url&&key){$("supabaseUrl").value=url;$("supabaseKey").value=key;sb=window.supabase.createClient(url,key);$("configPanel").classList.add("hidden");$("loginPanel").classList.remove("hidden");
+  sb.auth.getSession().then(({data})=>{if(data.session)showDashboard(data.session.user);});
+ }
+}
+$("connectBtn").onclick=connect;
+$("loginBtn").onclick=async()=>{const {data,error}=await sb.auth.signInWithPassword({email:$("email").value.trim(),password:$("password").value});if(error){message("loginStatus",error.message,"error");return;}showDashboard(data.user);};
+$("logoutBtn").onclick=async()=>{await sb.auth.signOut();showAuth();};
+$("saveAnnouncement").onclick=async()=>{
+ const id=$("announcementId").value, title=$("announcementTitle").value.trim(), body=$("announcementBody").value.trim();
+ if(!title||!body){appMessage("Judul dan isi pengumuman wajib diisi.","error");return;}
+ const row={title,body,is_published:$("announcementPublished").value==="true"};
+ const q=id?sb.from("announcements").update(row).eq("id",id):sb.from("announcements").insert(row);
+ const {error}=await q;if(error){appMessage(error.message,"error");return;}clearAnnouncement();appMessage("Pengumuman berhasil disimpan.","success");loadAnnouncements();
+};
+$("cancelAnnouncement").onclick=clearAnnouncement;
+function clearAnnouncement(){$("announcementId").value="";$("announcementTitle").value="";$("announcementBody").value="";$("announcementPublished").value="true";}
+async function loadAnnouncements(){
+ const {data,error}=await sb.from("announcements").select("*").order("created_at",{ascending:false});
+ if(error){$("announcementsList").textContent=error.message;return;}
+ $("announcementsList").innerHTML="<h3>Daftar pengumuman</h3>"+(data||[]).map(x=>`<div class="item"><b>${esc(x.title)}</b> <span class="tag">${x.is_published?"Terbit":"Draf"}</span><p>${esc(x.body)}</p><button class="secondary" data-edit-ann="${x.id}">Edit</button><button class="danger" data-del-ann="${x.id}">Hapus</button></div>`).join("");
+ document.querySelectorAll("[data-edit-ann]").forEach(b=>b.onclick=()=>{const x=data.find(v=>v.id===b.dataset.editAnn);$("announcementId").value=x.id;$("announcementTitle").value=x.title;$("announcementBody").value=x.body;$("announcementPublished").value=String(x.is_published);window.scrollTo({top:0,behavior:"smooth"});});
+ document.querySelectorAll("[data-del-ann]").forEach(b=>b.onclick=()=>deleteRow("announcements",b.dataset.delAnn,loadAnnouncements));
+}
+$("saveEvent").onclick=async()=>{
+ const id=$("eventId").value,title=$("eventTitle").value.trim();if(!title){appMessage("Nama kegiatan wajib diisi.","error");return;}
+ const raw=$("eventDate").value;
+ const row={title,event_date:raw?new Date(raw).toISOString():null,location:$("eventLocation").value.trim(),description:$("eventDescription").value.trim(),is_published:$("eventPublished").value==="true"};
+ const q=id?sb.from("events").update(row).eq("id",id):sb.from("events").insert(row);
+ const {error}=await q;if(error){appMessage(error.message,"error");return;}clearEvent();appMessage("Kegiatan berhasil disimpan.","success");loadEvents();
+};
+$("cancelEvent").onclick=clearEvent;
+function clearEvent(){$("eventId").value="";$("eventTitle").value="";$("eventDate").value="";$("eventLocation").value="";$("eventDescription").value="";$("eventPublished").value="true";}
+async function loadEvents(){
+ const {data,error}=await sb.from("events").select("*").order("event_date",{ascending:true});
+ if(error){$("eventsList").textContent=error.message;return;}
+ $("eventsList").innerHTML="<h3>Daftar kegiatan</h3>"+(data||[]).map(x=>`<div class="item"><b>${esc(x.title)}</b> <span class="tag">${x.is_published?"Terbit":"Draf"}</span><p>${esc(x.event_date?new Date(x.event_date).toLocaleString("id-ID"):"Tanggal belum ditentukan")} · ${esc(x.location||"Lokasi belum diisi")}</p><p>${esc(x.description||"")}</p><button class="secondary" data-edit-event="${x.id}">Edit</button><button class="danger" data-del-event="${x.id}">Hapus</button></div>`).join("");
+ document.querySelectorAll("[data-edit-event]").forEach(b=>b.onclick=()=>{const x=data.find(v=>v.id===b.dataset.editEvent);$("eventId").value=x.id;$("eventTitle").value=x.title;$("eventDate").value=x.event_date?new Date(new Date(x.event_date).getTime()-new Date(x.event_date).getTimezoneOffset()*60000).toISOString().slice(0,16):"";$("eventLocation").value=x.location||"";$("eventDescription").value=x.description||"";$("eventPublished").value=String(x.is_published);});
+ document.querySelectorAll("[data-del-event]").forEach(b=>b.onclick=()=>deleteRow("events",b.dataset.delEvent,loadEvents));
+}
+async function deleteRow(table,id,refresh){if(!confirm("Yakin ingin menghapus data ini?"))return;const {error}=await sb.from(table).delete().eq("id",id);if(error){appMessage(error.message,"error");return;}appMessage("Data berhasil dihapus.","success");refresh();}
+$("uploadPhoto").onclick=async()=>{
+ const file=$("photoFile").files[0];if(!file){appMessage("Pilih foto terlebih dahulu.","error");return;}if(file.size>5*1024*1024){appMessage("Ukuran foto maksimal 5 MB.","error");return;}
+ const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,"_"),path=Date.now()+"_"+safe;
+ const {error}=await sb.storage.from("rt-gallery").upload(path,file,{upsert:false,contentType:file.type});
+ if(error){appMessage(error.message,"error");return;}
+ const {data:pub}=sb.storage.from("rt-gallery").getPublicUrl(path);
+ const {error:dbErr}=await sb.from("gallery").insert({caption:$("photoCaption").value.trim(),image_path:path,image_url:pub.publicUrl,is_published:true});
+ if(dbErr){appMessage(dbErr.message,"error");return;}$("photoFile").value="";$("photoCaption").value="";appMessage("Foto berhasil diunggah.","success");loadGallery();
+};
+async function loadGallery(){
+ const {data,error}=await sb.from("gallery").select("*").order("created_at",{ascending:false});if(error){$("galleryList").textContent=error.message;return;}
+ $("galleryList").innerHTML="<h3>Foto yang sudah diunggah</h3>"+(data||[]).map(x=>`<div class="item"><img src="${esc(x.image_url)}" alt="" style="max-width:130px;max-height:100px;object-fit:cover;border-radius:6px"><p>${esc(x.caption||"Tanpa keterangan")}</p><button class="danger" data-del-photo="${x.id}" data-path="${esc(x.image_path)}">Hapus foto</button></div>`).join("");
+ document.querySelectorAll("[data-del-photo]").forEach(b=>b.onclick=async()=>{if(!confirm("Hapus foto ini?"))return;const {error:e1}=await sb.storage.from("rt-gallery").remove([b.dataset.path]);if(e1){appMessage(e1.message,"error");return;}const {error:e2}=await sb.from("gallery").delete().eq("id",b.dataset.delPhoto);if(e2){appMessage(e2.message,"error");return;}loadGallery();});
+}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function loadAll(){await Promise.all([loadAnnouncements(),loadEvents(),loadGallery()]);}
+init();
+</script>
+</body></html>
