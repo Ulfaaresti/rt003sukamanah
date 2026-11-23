@@ -1,0 +1,301 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portal RT 003 Sukamanah Sukatani</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background: #f5f8f5;
+    color: #263b30;
+    line-height: 1.6;
+}
+
+/* HEADER */
+header {
+    background: #176b4b;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 26px;
+}
+
+header p {
+    font-size: 14px;
+}
+
+/* NAVIGASI */
+nav {
+    background: #105239;
+    padding: 15px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin: 0 15px;
+    font-weight: bold;
+}
+
+nav a:hover {
+    color: #f5ce75;
+}
+
+/* BERANDA */
+.hero {
+    background: linear-gradient(135deg, #dff1e5, #f5f8e9);
+    padding: 85px 20px;
+    text-align: center;
+}
+
+.hero h2 {
+    font-size: 38px;
+    color: #176b4b;
+}
+
+.hero p {
+    max-width: 650px;
+    margin: 15px auto;
+}
+
+/* TOMBOL */
+.btn {
+    display: inline-block;
+    background: #176b4b;
+    color: white;
+    padding: 12px 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-top: 15px;
+}
+
+/* SECTION */
+section {
+    padding: 55px 8%;
+}
+
+section h2 {
+    color: #176b4b;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* KARTU */
+.container {
+    display: grid;
+    grid-template-columns:
+        repeat(auto-fit, minmax(230px, 1fr));
+    gap: 20px;
+}
+
+.card {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 3px 12px #00000012;
+}
+
+.card h3 {
+    color: #176b4b;
+    margin-bottom: 10px;
+}
+
+/* KONTAK */
+.contact {
+    background: #e5f1e8;
+    text-align: center;
+}
+
+/* FOOTER */
+footer {
+    background: #105239;
+    color: white;
+    text-align: center;
+    padding: 20px;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+    nav a {
+        display: inline-block;
+        margin: 5px;
+        font-size: 13px;
+    }
+
+    .hero h2 {
+        font-size: 28px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<header>
+    <h1>PORTAL RT 003</h1>
+    <p>Sukamanah - Sukatani</p>
+</header>
+
+<!-- NAVIGASI -->
+<nav>
+    <a href="#beranda">Beranda</a>
+    <a href="#profil">Profil RT</a>
+    <a href="#program">Program</a>
+    <a href="#pengurus">Pengurus</a>
+    <a href="#kontak">Kontak</a>
+</nav>
+
+<!-- BERANDA -->
+<div class="hero" id="beranda">
+    <h2>Selamat Datang</h2>
+    <h2>Portal RT 003 Sukamanah</h2>
+
+    <p>
+        Bersama membangun lingkungan yang aman,
+        nyaman, bersih, dan harmonis.
+        Mari kita tingkatkan kebersamaan
+        dan gotong royong antarwarga.
+    </p>
+
+    <a href="#profil" class="btn">
+        Mengenal RT Kami
+    </a>
+</div>
+
+<!-- PROFIL -->
+<section id="profil">
+    <h2>Profil RT 003</h2>
+
+    <div class="card">
+        <p>
+            RT 003 merupakan bagian dari wilayah
+            Sukamanah, Sukatani.
+
+            Website ini dibuat sebagai media informasi,
+            komunikasi, dan pengenalan lingkungan
+            bagi seluruh warga RT 003.
+        </p>
+
+        <br>
+
+        <h3>Visi</h3>
+        <p>
+            Mewujudkan lingkungan yang aman,
+            bersih, nyaman, tertib, dan harmonis.
+        </p>
+
+        <br>
+
+        <h3>Misi</h3>
+        <ul>
+            <li>Meningkatkan gotong royong.</li>
+            <li>Menjaga kebersihan lingkungan.</li>
+            <li>Meningkatkan keamanan warga.</li>
+            <li>Mempererat silaturahmi.</li>
+        </ul>
+    </div>
+</section>
+
+<!-- PROGRAM -->
+<section id="program">
+    <h2>Program dan Kegiatan</h2>
+
+    <div class="container">
+
+        <div class="card">
+            <h3>🧹 Kerja Bakti</h3>
+            <p>
+                Kegiatan menjaga kebersihan
+                lingkungan bersama warga.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>🤝 Gotong Royong</h3>
+            <p>
+                Membangun kebersamaan
+                dan kepedulian antarwarga.
+            </p>
+        </div>
+
+        <div class="card">
+            <h3>📢 Informasi Warga</h3>
+            <p>
+                Menyampaikan informasi
+                dan pengumuman lingkungan.
+            </p>
+        </div>
+
+    </div>
+</section>
+
+<!-- PENGURUS -->
+<section id="pengurus">
+    <h2>Struktur Pengurus RT</h2>
+
+    <div class="container">
+
+        <div class="card">
+            <h3>Ketua RT</h3>
+            <p>Nama Ketua RT 003</p>
+        </div>
+
+        <div class="card">
+            <h3>Sekretaris</h3>
+            <p>Nama Sekretaris</p>
+        </div>
+
+        <div class="card">
+            <h3>Bendahara</h3>
+            <p>Nama Bendahara</p>
+        </div>
+
+    </div>
+</section>
+
+<!-- KONTAK -->
+<section class="contact" id="kontak">
+    <h2>Hubungi Kami</h2>
+
+    <p>
+        RT 003 Sukamanah, Sukatani
+    </p>
+
+    <p>
+        Kontak Pengurus: Isi Nomor WhatsApp
+    </p>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <p>
+        &copy; <span id="tahun"></span>
+        Portal RT 003 Sukamanah Sukatani
+    </p>
+    <p>Bersama Membangun Lingkungan</p>
+</footer>
+
+<script>
+document.getElementById("tahun").textContent =
+    new Date().getFullYear();
+</script>
+
+</body>
+</html>
